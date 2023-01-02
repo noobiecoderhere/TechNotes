@@ -1,8 +1,11 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-
+const { logger } = require("./middleware/logger");
 const PORT = process.env.PORT || 3001;
+
+// logger middleware
+app.use(logger);
 
 // Set public as the default lookup for static files
 app.use(express.static(path.join(__dirname, "public")));
