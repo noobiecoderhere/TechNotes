@@ -1,0 +1,7 @@
+const HTTP_STATUS_CODES = {
+  SUCCESS: 200,
+  SERVER_ERROR: 500,
+  UNAUTHORIZED: 401,
+};
+
+module.exports = HTTP_STATUS_CODES;

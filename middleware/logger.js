@@ -4,14 +4,14 @@ const path = require("path");
 const { format } = require("date-fns");
 const { v4: uuid } = require("uuid");
 
-const logEvent = async (message) => {
+const logEvent = async (message, fileName) => {
   // Get the current date and time in the required format
   const dateTime = format(new Date(), "dd-MM-yyyy HH:mm:ss");
   // Create the string to be logged
   const logItem = `${uuid()}\t${dateTime} \t${message}\n`;
 
   const LOG_FOLDER_PATH = path.join(__dirname, "..", "logs");
-  const LOG_FILE_PATH = path.join(__dirname, "..", "logs", "tech-notes.log");
+  const LOG_FILE_PATH = path.join(__dirname, "..", "logs", fileName);
   const MAX_LOG_FILE_SIZE_IN_KB = 10;
 
   try {
@@ -39,7 +39,7 @@ const logEvent = async (message) => {
 };
 
 const logger = (req, res, next) => {
-  logEvent(`${req.method} ${req.originalUrl}`);
+  logEvent(`${req.method} ${req.originalUrl}`, "tech-notes.log");
   next();
 };
 
