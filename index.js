@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const path = require("path");
@@ -6,6 +7,7 @@ const errorHandler = require("./middleware/errorHandler");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const corsOptions = require("./config/cors-options");
+const sequelizeConfig = require("./config/sequelize");
 const PORT = process.env.PORT || 3001;
 
 // logger middleware
@@ -22,6 +24,9 @@ app.use(cookieParser());
 
 // Set public as the default lookup for static files
 app.use(express.static(path.join(__dirname, "public")));
+
+// Check connection to database
+sequelizeConfig.authenticate();
 
 // Render 404 page response as per request
 app.all("*", (req, res) => {
