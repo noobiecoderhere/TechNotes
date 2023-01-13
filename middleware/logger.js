@@ -4,7 +4,7 @@ const path = require("path");
 const { format } = require("date-fns");
 const { v4: uuid } = require("uuid");
 
-const logEvent = async (message, fileName) => {
+const logEvent = async (message, fileName = "tech-notes.log") => {
   // Get the current date and time in the required format
   const dateTime = format(new Date(), "dd-MM-yyyy HH:mm:ss");
   // Create the string to be logged
