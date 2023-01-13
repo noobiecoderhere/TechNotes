@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const corsOptions = require("./config/cors-options");
 const sequelizeConfig = require("./config/sequelize");
+const mainRouter = require("./routes/root");
 const PORT = process.env.PORT || 3001;
 
 // logger middleware
@@ -28,6 +29,12 @@ app.use(express.static(path.join(__dirname, "public")));
 // Check connection to database
 sequelizeConfig.authenticate();
 
+// Routing
+mainRouter(app);
+
+// Custom error handler
+app.use(errorHandler);
+
 // Render 404 page response as per request
 app.all("*", (req, res) => {
   res.status(404);
@@ -39,9 +46,6 @@ app.all("*", (req, res) => {
     res.type("txt").send("404 Page Not Found");
   }
 });
-
-// Custom error handler
-app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Express server running on port: ${PORT}`);
