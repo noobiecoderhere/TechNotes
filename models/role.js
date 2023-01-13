@@ -5,8 +5,6 @@ const {
   ADMIN_ROLE_NAME,
   EMPLOYEE_ROLE_NAME,
 } = require("../constants/role");
-const User = require("./user");
-const UserRole = require("./user-role");
 
 const Role = sequelize.define(
   "Role",
@@ -20,6 +18,7 @@ const Role = sequelize.define(
     name: {
       type: DataTypes.TEXT,
       allowNull: false,
+      values: [MANAGER_ROLE_NAME, ADMIN_ROLE_NAME, EMPLOYEE_ROLE_NAME],
       validate: {
         isIn: [[MANAGER_ROLE_NAME, ADMIN_ROLE_NAME, EMPLOYEE_ROLE_NAME]],
       },
@@ -30,7 +29,5 @@ const Role = sequelize.define(
     timestamps: true,
   }
 );
-
-Role.belongsToMany(User, { through: UserRole });
 
 module.exports = Role;

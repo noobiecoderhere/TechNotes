@@ -1,8 +1,5 @@
 const { sequelize } = require("../config/sequelize");
-const { DataTypes, Sequelize } = require("sequelize");
-const Note = require("./note");
-const Role = require("./role");
-const UserRole = require("./user-role");
+const { DataTypes } = require("sequelize");
 
 const User = sequelize.define(
   "User",
@@ -33,7 +30,4 @@ const User = sequelize.define(
   }
 );
 
-User.hasMany(Note);
-User.hasMany(UserRole);
-User.belongsToMany(Role);
 module.exports = User;

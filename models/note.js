@@ -31,6 +31,9 @@ const Note = sequelize.define(
   }
 );
 
+User.hasMany(Note, {
+  foreignKey: "assigned_user_id",
+});
 Note.belongsTo(User, {
   foreignKey: "assigned_user_id",
 });
