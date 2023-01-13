@@ -9,11 +9,18 @@ const bcrypt = require("bcrypt");
 const { sequelize } = require("../config/sequelize");
 const roleController = require("./role");
 const UserRole = require("../models/user-role");
+const { QueryTypes } = require("sequelize");
 
 const getAllUsers = async (req, res, next) => {
   try {
-    const users = await User.findAll({
-      attributes: ["id", "username", "active"],
+    const query = `SELECT u.id, u.username, array_agg(r.name) as roles
+    FROM public.user u
+    INNER JOIN user_role_map urm ON u.id = urm.user_id
+    INNER JOIN role r ON r.id = urm.role_id
+    GROUP BY u.id, u.username
+    `;
+    const users = await sequelize.query(query, {
+      type: QueryTypes.SELECT,
     });
     if (!users?.length) {
       return res.status(SUCCESS).json({
