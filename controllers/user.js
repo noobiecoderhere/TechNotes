@@ -63,6 +63,12 @@ const createNewUser = async (req, res, next) => {
     const newUser = await User.create(userObj, {
       transaction: createUserTranscation,
     });
+    if (!newUser) {
+      await createUserTranscation.rollback();
+      return res.status(BAD_REQUEST).json({
+        message: "Invalid user data  reciever",
+      });
+    }
     // For each role ID, create a new user role object to insert into user role table
     let userRoles = [];
     roleIds?.forEach((roleId) => {
