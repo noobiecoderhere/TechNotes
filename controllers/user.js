@@ -9,11 +9,12 @@ const bcrypt = require("bcrypt");
 const { sequelize } = require("../config/sequelize");
 const roleController = require("./role");
 const UserRole = require("../models/user-role");
+const Note = require("../models/note");
 const { QueryTypes } = require("sequelize");
 
 const getAllUsers = async (req, res, next) => {
   try {
-    const query = `SELECT u.id, u.username, array_agg(r.name) as roles
+    const query = `SELECT u.id, u.username, u.active, array_agg(r.name) as roles
     FROM public.user u
     INNER JOIN user_role_map urm ON u.id = urm.user_id
     INNER JOIN role r ON r.id = urm.role_id
@@ -100,7 +101,43 @@ const createNewUser = async (req, res, next) => {
 };
 
 const updateUser = async (req, res, next) => {
+  // Update username, active, roles via single request
   try {
+    const { id, username, active, roles } = req.body;
+    // Request Validation
+    if (
+      !id ||
+      !username ||
+      typeof active !== "boolean" ||
+      !Array.isArray(roles)
+    ) {
+      return res.status(BAD_REQUEST).json({
+        message: "All fields are required",
+      });
+    }
+    // Checking if user exists
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(BAD_REQUEST).json({
+        message: "User not found",
+      });
+    }
+
+    // Check if username already exists with another user
+    const duplicateUser = await User.findOne({
+      attributes: ["id"],
+      where: { username },
+    });
+    if (duplicateUser?.id !== id) {
+      return res.status(CONFLICT).json({
+        message: "Username already exists ! Please choose a different one",
+      });
+    }
+
+    await User.update({ username, roles, active }, { where: { id: user.id } });
+    res.status(SUCCESS).json({
+      message: "User updated successfully",
+    });
   } catch (err) {
     next(err);
   }
@@ -108,6 +145,38 @@ const updateUser = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   try {
+    const { id } = req.body;
+    // Request validation
+    if (!id) {
+      return res.status(BAD_REQUEST).json({
+        message: "User ID is required",
+      });
+    }
+    // Check if user exists
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(BAD_REQUEST).json({
+        message: "User not found",
+      });
+    }
+
+    // Disallow deletion if any note is assigned
+    const assignedNote = await Note.findOne({
+      where: { assigned_user_id: id },
+    });
+
+    if (assignedNote) {
+      return res.status(BAD_REQUEST).json({
+        message: "User has assigned notes",
+      });
+    }
+
+    // Delete logic
+    await user.destroy();
+
+    res.status(SUCCESS).json({
+      message: `User with ID ${id} deleted successfully`,
+    });
   } catch (err) {
     next(err);
   }
