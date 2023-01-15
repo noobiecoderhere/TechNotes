@@ -4,10 +4,10 @@ const {
   BAD_REQUEST,
   CONFLICT,
 } = require("../constants/http-status-codes");
-const { isValidCreateUserReq } = require("../utils/validators/user");
+const { isValidCreateUserReq } = require("../utils/validators/user-validator");
 const bcrypt = require("bcrypt");
 const { sequelize } = require("../config/sequelize");
-const roleController = require("./role");
+const roleController = require("./role-controller");
 const UserRole = require("../models/user-role");
 const Note = require("../models/note");
 const { QueryTypes } = require("sequelize");

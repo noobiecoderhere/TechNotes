@@ -4,7 +4,7 @@ const {
   MANAGER_ROLE_NAME,
   ADMIN_ROLE_NAME,
   EMPLOYEE_ROLE_NAME,
-} = require("../constants/role");
+} = require("../constants/role-constants");
 
 const Role = sequelize.define(
   "Role",

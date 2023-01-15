@@ -1,4 +1,4 @@
-const allowedOrigins = require("../constants/cors");
+const allowedOrigins = require("../constants/cors-constants");
 const HTTP_STATUS_CODES = require("../constants/http-status-codes");
 
 const corsOptions = {

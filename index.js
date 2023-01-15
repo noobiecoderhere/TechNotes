@@ -8,7 +8,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const corsOptions = require("./config/cors-options");
 const sequelizeConfig = require("./config/sequelize");
-const mainRouter = require("./routes/root");
+const mainRouter = require("./routes/root-router");
 const PORT = process.env.PORT || 3001;
 
 // logger middleware
